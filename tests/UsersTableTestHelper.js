@@ -19,7 +19,7 @@ const UsersTableTestHelper = {
 
   async findUsersById(id) {
     const query = {
-      text: 'SELECT * FROM users id = $1',
+      text: 'SELECT * FROM users WHERE id = $1',
       values: [id],
     }
 
