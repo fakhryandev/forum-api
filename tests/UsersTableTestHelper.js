@@ -10,11 +10,12 @@ const UsersTableTestHelper = {
     fullname = 'User Test',
   }) {
     const query = {
-      text: 'INSERT INTO users VALUES($1, $2, $3, $4)',
+      text: 'INSERT INTO users VALUES($1, $2, $3, $4) RETURNING id',
       values: [id, username, password, fullname],
     }
 
-    await pool.query(query)
+    const result = await pool.query(query)
+    return result.rows[0].id
   },
 
   async findUsersById(id) {
@@ -28,7 +29,7 @@ const UsersTableTestHelper = {
   },
 
   async cleanTable() {
-    await pool.query('TRUNCATE TABLE users')
+    await pool.query('TRUNCATE TABLE users CASCADE')
   },
 }
 
