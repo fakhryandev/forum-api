@@ -82,5 +82,25 @@ describe('DomainErrorTranslator', () => {
         new Error('DELETE_AUTHENTICATION_USE_CASE.PAYLOAD.NOT_MEET_DATA_TYPE')
       )
     ).toStrictEqual(new InvariantError('refresh token harus string'))
+
+    expect(
+      DomainErrorTranslator.translate(
+        new Error('NEW_THREAD.NOT_CONTAIN_NEEDED_PROPERTY')
+      )
+    ).toStrictEqual(
+      new InvariantError(
+        'tidak dapat membuat thread baru karena properti yang dibutuhkan tidak ada'
+      )
+    )
+
+    expect(
+      DomainErrorTranslator.translate(
+        new Error('NEW_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION')
+      )
+    ).toStrictEqual(
+      new InvariantError(
+        'tidak dapat membuat thrad baru karena tipe data tidak sesuai'
+      )
+    )
   })
 })
