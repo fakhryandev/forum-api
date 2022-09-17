@@ -12,7 +12,7 @@ class AddedThread {
     const { id, title, owner } = payload
 
     if (!id || !title || !owner) {
-      throw new Error('NEW_THREAD.NOT_CONTAIN_NEEDED_PROPERTY')
+      throw new Error('ADDED_THREAD.NOT_CONTAIN_NEEDED_PROPERTY')
     }
 
     if (
@@ -20,7 +20,7 @@ class AddedThread {
       typeof title !== 'string' ||
       typeof owner !== 'string'
     ) {
-      throw new Error('NEW_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION')
+      throw new Error('ADDED_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION')
     }
   }
 }

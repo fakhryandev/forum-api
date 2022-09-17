@@ -15,7 +15,7 @@ describe('AddedComment entities', () => {
     const payload = {
       id: 'comment-123',
       content: 123,
-      owner: ['user-123'],
+      owner_id: ['user-123'],
     }
 
     expect(() => new AddedComment(payload)).toThrowError(
