@@ -4,6 +4,7 @@ const pool = require('../../database/postgres/pool')
 const NewThread = require('../../../Domains/threads/entities/NewThread')
 const ThreadRepositoryPostgres = require('../ThreadRepositoryPostgres')
 const AddedThread = require('../../../Domains/threads/entities/AddedThread')
+const NotFoundError = require('../../../Commons/exceptions/NotFoundError')
 
 describe('ThreadRepositoryPostgres', () => {
   afterEach(async () => {
@@ -74,29 +75,53 @@ describe('ThreadRepositoryPostgres', () => {
     })
   })
 
-  // describe('getThreadById', () => {
-  //   it('should throw NotFound error when thread not found', async () => {
-  //     const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {})
+  describe('getThreadById', () => {
+    it('should throw NotFound error when thread not found', async () => {
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {})
 
-  //     await expect(
-  //       threadRepositoryPostgres.getThreadById('thread-000')
-  //     ).rejects.toThrow(NotFoundError)
-  //   })
+      await expect(
+        threadRepositoryPostgres.getThreadById('thread-000')
+      ).rejects.toThrow(NotFoundError)
+    })
 
-  //   it('should return correct thread', async () => {
-  //     const ownerId = await UsersTableTestHelper.addUser({
-  //       username: 'testuser',
-  //     })
-  //     const threadId = await ThreadsTableTestHelper.adddThread({
-  //       owner: ownerId,
-  //     })
+    it('should return correct thread', async () => {
+      const ownerId = await UsersTableTestHelper.addUser({
+        username: 'testuser',
+      })
+      const threadId = await ThreadsTableTestHelper.addThread({
+        owner: ownerId,
+      })
 
-  //     const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {})
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {})
 
-  //     const thread = await threadRepositoryPostgres.getThreadById(threadId)
+      const thread = await threadRepositoryPostgres.getThreadById(threadId)
 
-  //     expect(thread.id).toEqual(threadId)
-  //     expect(thread.username).toEqual('testuser')
-  //   })
-  // })
+      expect(thread.id).toEqual(threadId)
+      expect(thread.username).toEqual('testuser')
+    })
+  })
+
+  describe('verifyAvailableThreadById', () => {
+    it('should throw not found error when thread not found', async () => {
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {})
+
+      await expect(
+        threadRepositoryPostgres.verifyAvailableThreadById('thread-unknown')
+      ).rejects.toThrowError(NotFoundError)
+    })
+
+    it('should not throw not found error when thread is found', async () => {
+      const ownerId = await UsersTableTestHelper.addUser({
+        username: 'user-123',
+      })
+      const threadId = await ThreadsTableTestHelper.addThread({
+        owner: ownerId,
+      })
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {})
+
+      await expect(
+        threadRepositoryPostgres.verifyAvailableThreadById(threadId)
+      ).resolves.not.toThrowError(NotFoundError)
+    })
+  })
 })
