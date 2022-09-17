@@ -1,3 +1,4 @@
+const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper')
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper')
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper')
 const container = require('../../container')
@@ -181,8 +182,80 @@ describe('/threads endpoint', () => {
       expect(response.statusCode).toEqual(400)
       expect(responseJson.status).toEqual('fail')
       expect(responseJson.message).toEqual(
-        'tidak dapat membuat thrad baru karena tipe data tidak sesuai'
+        'tidak dapat membuat thread baru karena tipe data tidak sesuai'
       )
+    })
+  })
+
+  describe('when GET /threads/{threadId}', () => {
+    it('should response 200 and return thread detail correctly', async () => {
+      const server = await createServer(container)
+
+      const registerPayload = {
+        username: 'testuser',
+        password: 'password',
+        fullname: 'Test User',
+      }
+
+      const loginPayload = {
+        username: 'testuser',
+        password: 'password',
+      }
+
+      const newThreadPayload = {
+        title: 'thread-title',
+        body: 'thread-body',
+      }
+
+      await server.inject({
+        method: 'POST',
+        url: '/users',
+        payload: registerPayload,
+      })
+
+      const auth = await server.inject({
+        method: 'POST',
+        url: '/authentications',
+        payload: loginPayload,
+      })
+
+      const responseAuth = JSON.parse(auth.payload)
+
+      const thread = await server.inject({
+        method: 'POST',
+        url: '/threads',
+        payload: newThreadPayload,
+        headers: {
+          Authorization: `Bearer ${responseAuth.data.accessToken}`,
+        },
+      })
+
+      const responseThread = JSON.parse(thread.payload)
+
+      const response = await server.inject({
+        method: 'GET',
+        url: `/threads/${responseThread.data.addedThread.id}`,
+      })
+
+      const responseJson = JSON.parse(response.payload)
+      expect(response.statusCode).toEqual(200)
+      expect(responseJson.status).toEqual('success')
+      expect(responseJson.data.thread).toBeDefined()
+    })
+
+    it('should return 404 if thread not found', async () => {
+      const server = await createServer(container)
+      const threadId = 'thread-unknown'
+
+      const response = await server.inject({
+        method: 'GET',
+        url: `/threads/${threadId}`,
+      })
+
+      const responseJson = JSON.parse(response.payload)
+      expect(response.statusCode).toEqual(404)
+      expect(responseJson.status).toEqual('fail')
+      expect(responseJson.message).toEqual('thread tidak ditemukan')
     })
   })
 })
