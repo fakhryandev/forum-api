@@ -7,7 +7,6 @@ const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelp
 const AddedComment = require('../../../Domains/comments/entities/AddedComment')
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError')
 const AuthorizationError = require('../../../Commons/exceptions/AuthorizationError')
-const DetailComment = require('../../../Domains/comments/entities/DetailComment')
 
 describe('CommentRepositoryPostgres', () => {
   afterEach(async () => {

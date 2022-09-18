@@ -1,4 +1,3 @@
-const { payload } = require('@hapi/hapi/lib/validation')
 const CommentRepository = require('../../../Domains/comments/CommentRepository')
 const AddedComment = require('../../../Domains/comments/entities/AddedComment')
 const NewComment = require('../../../Domains/comments/entities/NewComment')

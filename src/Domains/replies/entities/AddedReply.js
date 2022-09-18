@@ -1,7 +1,7 @@
 class AddedReply {
   constructor(payload) {
     this._verifyPayload(payload)
-    const { id, content, owner } = payload
+    const { id, content, owner_id: owner } = payload
 
     this.id = id
     this.content = content
@@ -9,7 +9,7 @@ class AddedReply {
   }
 
   _verifyPayload(payload) {
-    const { id, content, owner } = payload
+    const { id, content, owner_id: owner } = payload
 
     if (!id || !content || !owner) {
       throw new Error('ADDED_REPLIES.NOT_CONTAIN_NEEDED_PROPERTY')
