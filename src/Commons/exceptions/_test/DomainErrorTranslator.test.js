@@ -122,5 +122,25 @@ describe('DomainErrorTranslator', () => {
         'tidak dapat membuat comment baru karena tipe data tidak sesuai'
       )
     )
+
+    expect(
+      DomainErrorTranslator.translate(
+        new Error('NEW_REPLIES.NOT_CONTAIN_NEEDED_PROPERTY')
+      )
+    ).toStrictEqual(
+      new InvariantError(
+        'tidak dapat membuat balasan baru karena properti yang dibutuhkan tidak ada'
+      )
+    )
+
+    expect(
+      DomainErrorTranslator.translate(
+        new Error('NEW_REPLIES.NOT_MEET_DATA_TYPE_SPECIFICATION')
+      )
+    ).toStrictEqual(
+      new InvariantError(
+        'tidak dapat membuat balasan baru karena tipe data tidak sesuai'
+      )
+    )
   })
 })

@@ -6,6 +6,8 @@ const pool = require('../../database/postgres/pool')
 const RepliesRepositoryPostgres = require('../RepliesRepositoryPostgres')
 const NewReplies = require('../../../Domains/replies/entities/NewReplies')
 const AddedReply = require('../../../Domains/replies/entities/AddedReply')
+const NotFoundError = require('../../../Commons/exceptions/NotFoundError')
+const AuthorizationError = require('../../../Commons/exceptions/AuthorizationError')
 
 describe('RepliesRepositoryPostgres', () => {
   afterEach(async () => {
@@ -44,11 +46,6 @@ describe('RepliesRepositoryPostgres', () => {
         threadId,
       })
       await repliesRepositoryPostgres.addReplies(newReplies)
-      // const expectedAddedReplies = new AddedReply({
-      //   id: `reply-${fakeIdGenerator()}`,
-      //   content: newReplies.content,
-      //   ownerId: newReplies.owner
-      // })
       const replies = await RepliesTableTestHelper.findRepliesById(
         `reply-${fakeIdGenerator()}`
       )
@@ -93,6 +90,148 @@ describe('RepliesRepositoryPostgres', () => {
           owner_id: ownerId,
         })
       )
+    })
+  })
+
+  describe('getRepliesByComment method', () => {
+    it('should return replies by comment id correctly', async () => {
+      const ownerId = await UsersTableTestHelper.addUser({
+        username: 'testuser',
+      })
+      const userReplyId = await UsersTableTestHelper.addUser({
+        username: 'replyuser',
+        id: 'test-235',
+      })
+      const threadId = await ThreadsTableTestHelper.addThread({
+        owner: ownerId,
+      })
+      const commentId = await CommentsTableTestHelper.addComment({
+        id: 'comment-123',
+        thread_id: threadId,
+        owner_id: ownerId,
+      })
+
+      const payload = {
+        owner_id: userReplyId,
+        commentId,
+        threadId,
+        content: 'newnew',
+      }
+
+      const addedReplies = await RepliesTableTestHelper.addReplies(payload)
+
+      const repliesRepositoryPostgres = new RepliesRepositoryPostgres(pool, {})
+
+      const replies = await repliesRepositoryPostgres.getRepliesByCommentId([
+        commentId,
+      ])
+
+      expect(replies).toHaveLength(1)
+      expect(replies[0].id).toEqual(addedReplies)
+      expect(replies[0].username).toEqual('replyuser')
+    })
+  })
+
+  describe('deleteRepliesById method', () => {
+    it('should throw NotFoundError when id not found', async () => {
+      const repliesRepositoryPostgres = new RepliesRepositoryPostgres(pool, {})
+
+      await expect(
+        repliesRepositoryPostgres.deleteRepliesById('replies-123')
+      ).rejects.toThrowError(NotFoundError)
+    })
+
+    it('should update is_delete column', async () => {
+      const repliesRepositoryPostgres = new RepliesRepositoryPostgres(pool, {})
+
+      const ownerId = await UsersTableTestHelper.addUser({
+        username: 'testuser',
+      })
+      const threadId = await ThreadsTableTestHelper.addThread({
+        owner: ownerId,
+      })
+      const commentId = await CommentsTableTestHelper.addComment({
+        id: 'comment-123',
+        thread_id: threadId,
+        owner_id: ownerId,
+      })
+
+      const repliesId = await RepliesTableTestHelper.addReplies({
+        content: 'reply content',
+        owner: ownerId,
+        commentId,
+        threadId,
+      })
+
+      await repliesRepositoryPostgres.deleteRepliesById(repliesId)
+
+      const deletedReplies = await RepliesTableTestHelper.findRepliesById(
+        repliesId
+      )
+      expect(deletedReplies[0].is_delete).toBeTruthy()
+    })
+  })
+
+  describe('verifyReplyOwner method', () => {
+    it('should throw NotFoundError when id not found', async () => {
+      const repliesRepositoryPostgres = new RepliesRepositoryPostgres(pool, {})
+
+      await expect(
+        repliesRepositoryPostgres.verifyRepliesOwner('reply-123', 'user-456')
+      ).rejects.toThrowError(NotFoundError)
+    })
+
+    it('should throw AuthorizationError when owner unauthorized', async () => {
+      const repliesRepositoryPostgres = new RepliesRepositoryPostgres(pool, {})
+      const ownerId = await UsersTableTestHelper.addUser({
+        username: 'testuser',
+      })
+
+      const threadId = await ThreadsTableTestHelper.addThread({
+        owner: ownerId,
+      })
+
+      const commentId = await CommentsTableTestHelper.addComment({
+        thread_id: threadId,
+        id: 'comment-123',
+      })
+
+      await RepliesTableTestHelper.addReplies({
+        content: 'reply content',
+        owner_id: 'user-123',
+        commentId,
+      })
+
+      await expect(
+        repliesRepositoryPostgres.verifyRepliesOwner('reply-123', 'user-666')
+      ).rejects.toThrowError(AuthorizationError)
+    })
+
+    it('should not throw AuthorizationError when owner authorized', async () => {
+      const repliesRepositoryPostgres = new RepliesRepositoryPostgres(pool, {})
+
+      const ownerId = await UsersTableTestHelper.addUser({
+        username: 'testuser',
+      })
+
+      const threadId = await ThreadsTableTestHelper.addThread({
+        owner: ownerId,
+      })
+
+      const commentId = await CommentsTableTestHelper.addComment({
+        thread_id: threadId,
+        id: 'comment-123',
+      })
+
+      const repliesId = await RepliesTableTestHelper.addReplies({
+        content: 'reply content',
+        owner_id: 'user-123',
+        commentId,
+      })
+
+      await expect(
+        repliesRepositoryPostgres.verifyRepliesOwner(repliesId, 'user-123')
+      ).resolves.not.toThrowError(AuthorizationError)
     })
   })
 })

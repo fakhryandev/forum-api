@@ -4,7 +4,7 @@ describe('AddedReply entities', () => {
   it('should throw error when payload not contain needed property', () => {
     const payload = {
       id: 'reply-123',
-      owner: 'user-123',
+      owner_id: 'user-123',
     }
 
     expect(() => new AddedReply(payload)).toThrowError(
@@ -16,7 +16,7 @@ describe('AddedReply entities', () => {
     const payload = {
       id: 'reply-123',
       content: ['replyreply'],
-      owner: true,
+      owner_id: true,
     }
 
     expect(() => new AddedReply(payload)).toThrowError(
@@ -28,13 +28,13 @@ describe('AddedReply entities', () => {
     const payload = {
       id: 'reply-123',
       content: 'reply reply',
-      owner: 'user-123',
+      owner_id: 'user-123',
     }
 
     const addedReplies = new AddedReply(payload)
 
     expect(addedReplies.id).toEqual(payload.id)
     expect(addedReplies.content).toEqual(payload.content)
-    expect(addedReplies.owner).toEqual(payload.owner)
+    expect(addedReplies.owner_id).toEqual(payload.owner)
   })
 })

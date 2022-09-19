@@ -143,7 +143,7 @@ describe('CommentRepositoryPostgres', () => {
     })
 
     it('should not throw AuthorizationError when owner authorized', async () => {
-      const commentRepository = new CommentRepositoryPostgres(pool, {})
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {})
 
       const comment = await CommentsTableTestHelper.addComment({
         owner_id: 'user-531',
@@ -151,7 +151,7 @@ describe('CommentRepositoryPostgres', () => {
       })
 
       await expect(
-        commentRepository.verifyCommentOwner(comment, 'user-531')
+        commentRepositoryPostgres.verifyCommentOwner(comment, 'user-531')
       ).resolves.not.toThrowError(AuthorizationError)
     })
   })

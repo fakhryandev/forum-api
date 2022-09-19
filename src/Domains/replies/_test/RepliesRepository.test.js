@@ -12,6 +12,10 @@ describe('RepliesRepository interface', () => {
       repliesRepository.getRepliesByCommentId([''])
     ).rejects.toThrowError('REPLIES_REPOSITORY.METHOD_NOT_IMPLEMENTED')
 
+    await expect(
+      repliesRepository.verifyRepliesOwner('', '')
+    ).rejects.toThrowError('REPLIES_REPOSITORY.METHOD_NOT_IMPLEMENTED')
+
     await expect(repliesRepository.deleteRepliesById('')).rejects.toThrowError(
       'REPLIES_REPOSITORY.METHOD_NOT_IMPLEMENTED'
     )

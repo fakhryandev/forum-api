@@ -7,6 +7,10 @@ class RepliesRepository {
     throw new Error('REPLIES_REPOSITORY.METHOD_NOT_IMPLEMENTED')
   }
 
+  async verifyRepliesOwner(repliesId, owner) {
+    throw new Error('REPLIES_REPOSITORY.METHOD_NOT_IMPLEMENTED')
+  }
+
   async deleteRepliesById(id) {
     throw new Error('REPLIES_REPOSITORY.METHOD_NOT_IMPLEMENTED')
   }
