@@ -95,6 +95,8 @@ describe('RepliesRepositoryPostgres', () => {
 
   describe('getRepliesByComment method', () => {
     it('should return replies by comment id correctly', async () => {
+      const currentDate = new Date()
+
       const ownerId = await UsersTableTestHelper.addUser({
         username: 'testuser',
       })
@@ -116,6 +118,7 @@ describe('RepliesRepositoryPostgres', () => {
         commentId,
         threadId,
         content: 'newnew',
+        date: currentDate,
       }
 
       const addedReplies = await RepliesTableTestHelper.addReplies(payload)
@@ -129,6 +132,11 @@ describe('RepliesRepositoryPostgres', () => {
       expect(replies).toHaveLength(1)
       expect(replies[0].id).toEqual(addedReplies)
       expect(replies[0].username).toEqual('replyuser')
+      expect(replies[0].content).toEqual('newnew')
+      expect(replies[0].owner_id).toEqual(userReplyId)
+      expect(replies[0].comment_id).toEqual(commentId)
+      expect(replies[0].date).toEqual(currentDate)
+      expect(replies[0].is_delete).toBeFalsy()
     })
   })
 

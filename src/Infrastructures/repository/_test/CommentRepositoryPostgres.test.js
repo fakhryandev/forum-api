@@ -129,29 +129,46 @@ describe('CommentRepositoryPostgres', () => {
         commentRepositoryPostgres.verifyCommentOwner('comment-123', 'user-123')
       ).rejects.toThrowError(NotFoundError)
     })
+
     it('should throw AuthorizationError when owner unauthorized', async () => {
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {})
 
-      await CommentsTableTestHelper.addComment({
-        owner_id: 'user-531',
-        thread_id: 'thread-123',
+      const ownerId = await UsersTableTestHelper.addUser({
+        username: 'testuser',
+      })
+
+      const threadId = await ThreadsTableTestHelper.addThread({
+        owner: ownerId,
+      })
+
+      const commentId = await CommentsTableTestHelper.addComment({
+        owner_id: ownerId,
+        thread_id: threadId,
       })
 
       await expect(
-        commentRepositoryPostgres.verifyCommentOwner('comment-123', 'user-666')
+        commentRepositoryPostgres.verifyCommentOwner(commentId, 'user-666')
       ).rejects.toThrowError(AuthorizationError)
     })
 
     it('should not throw AuthorizationError when owner authorized', async () => {
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {})
 
+      const ownerId = await UsersTableTestHelper.addUser({
+        username: 'testuser',
+      })
+
+      const threadId = await ThreadsTableTestHelper.addThread({
+        owner: ownerId,
+      })
+
       const comment = await CommentsTableTestHelper.addComment({
-        owner_id: 'user-531',
-        thread_id: 'thread-123',
+        owner_id: ownerId,
+        thread_id: threadId,
       })
 
       await expect(
-        commentRepositoryPostgres.verifyCommentOwner(comment, 'user-531')
+        commentRepositoryPostgres.verifyCommentOwner(comment, ownerId)
       ).resolves.not.toThrowError(AuthorizationError)
     })
   })
@@ -196,6 +213,8 @@ describe('CommentRepositoryPostgres', () => {
     it('should return comments by thread id', async () => {
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {})
 
+      const currentDate = new Date()
+
       const ownerId = await UsersTableTestHelper.addUser({
         id: 'user-123',
       })
@@ -210,12 +229,14 @@ describe('CommentRepositoryPostgres', () => {
         thread_id: threadId,
         owner_id: ownerId,
         content: 'comment 1',
+        date: currentDate,
       })
 
       await CommentsTableTestHelper.addComment({
         id: 'comment-789',
         thread_id: threadId,
         owner_id: ownerId,
+        date: currentDate,
       })
 
       await CommentsTableTestHelper.deleteCommentById('comment-789')
@@ -226,9 +247,15 @@ describe('CommentRepositoryPostgres', () => {
       const [comment1, comment2] = comments
 
       expect(comments).toHaveLength(2)
+      expect(comment1.id).toEqual('comment-123')
       expect(comment1.username).toEqual('user-test')
       expect(comment1.content).toEqual('comment 1')
+      expect(comment1.date).toEqual(currentDate)
+
+      expect(comment2.id).toEqual('comment-789')
+      expect(comment2.username).toEqual('user-test')
       expect(comment2.content).toEqual('**komentar telah dihapus**')
+      expect(comment2.date).toEqual(currentDate)
     })
   })
 })

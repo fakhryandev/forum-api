@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 const pool = require('../src/Infrastructures/database/postgres/pool')
 
 const RepliesTableTestHelper = {
@@ -6,7 +8,7 @@ const RepliesTableTestHelper = {
     content = 'replyreply',
     owner_id = 'user-123',
     comment_id = 'comment-123',
-    date = new Date().toISOString(),
+    date = new Date(),
     is_delete = false,
   }) {
     const query = {

@@ -32,9 +32,15 @@ describe('AddRepliesUseCase', () => {
       .fn()
       .mockImplementation(() => Promise.resolve())
 
-    mockRepliesRepository.addReplies = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve(expectedAddedReplies))
+    mockRepliesRepository.addReplies = jest.fn().mockImplementation(() =>
+      Promise.resolve(
+        new AddedReply({
+          id: 'reply-123',
+          content: 'content replies',
+          owner_id: 'user-123',
+        })
+      )
+    )
 
     const addRepliesUseCase = new AddRepliesUseCase({
       threadRepository: mockThreadRepository,

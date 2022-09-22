@@ -35,6 +35,6 @@ describe('AddedReply entities', () => {
 
     expect(addedReplies.id).toEqual(payload.id)
     expect(addedReplies.content).toEqual(payload.content)
-    expect(addedReplies.owner_id).toEqual(payload.owner)
+    expect(addedReplies.owner).toEqual(payload.owner_id)
   })
 })

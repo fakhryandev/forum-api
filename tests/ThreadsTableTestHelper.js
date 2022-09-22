@@ -7,7 +7,7 @@ const ThreadsTableTestHelper = {
     id = 'thread-123',
     title = 'new thread',
     body = 'new thread body',
-    date = new Date().toISOString(),
+    date = new Date(),
     owner = 'user-123',
   }) {
     const query = {
@@ -30,7 +30,7 @@ const ThreadsTableTestHelper = {
   },
 
   async cleanTable() {
-    await pool.query('TRUNCATE TABLE threads')
+    await pool.query('TRUNCATE TABLE threads CASCADE')
   },
 }
 

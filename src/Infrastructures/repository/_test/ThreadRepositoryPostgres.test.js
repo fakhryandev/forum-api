@@ -85,11 +85,14 @@ describe('ThreadRepositoryPostgres', () => {
     })
 
     it('should return correct thread', async () => {
+      const currentDate = new Date()
+
       const ownerId = await UsersTableTestHelper.addUser({
         username: 'testuser',
       })
       const threadId = await ThreadsTableTestHelper.addThread({
         owner: ownerId,
+        date: currentDate,
       })
 
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {})
@@ -98,6 +101,9 @@ describe('ThreadRepositoryPostgres', () => {
 
       expect(thread.id).toEqual(threadId)
       expect(thread.username).toEqual('testuser')
+      expect(thread.title).toEqual('new thread')
+      expect(thread.body).toEqual('new thread body')
+      expect(thread.date).toEqual(currentDate)
     })
   })
 
