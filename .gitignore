@@ -1,4 +1,4 @@
 node_modules
 .env
 coverage
-forum-api-key.pem
+forum-api-webserver.pem
