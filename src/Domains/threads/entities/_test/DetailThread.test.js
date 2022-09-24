@@ -4,7 +4,6 @@ describe('DetailThread entities', () => {
   it('should throw error when payload not contain needed property', () => {
     const payload = {
       id: 'thread-123',
-      comments: [],
     }
 
     expect(() => new DetailThread(payload)).toThrowError(

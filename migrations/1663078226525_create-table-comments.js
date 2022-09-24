@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 exports.up = (pgm) => {
   pgm.createTable('comments', {
     id: {
@@ -20,6 +19,7 @@ exports.up = (pgm) => {
     date: {
       type: 'TIMESTAMP',
       notNull: true,
+      default: pgm.func('current_timestamp')
     },
     is_delete: {
       type: 'BOOLEAN',
@@ -43,5 +43,5 @@ exports.up = (pgm) => {
 exports.down = (pgm) => {
   pgm.dropConstraint('comments', 'fk_comments.owner_id_users.id')
   pgm.dropConstraint('comments', 'fk_comments.thread_id_threads.id')
-  pgm.dropTabe('comments')
+  pgm.dropTable('comments')
 }

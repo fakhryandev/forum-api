@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 exports.up = (pgm) => {
   pgm.createTable('threads', {
     id: {
@@ -16,6 +15,7 @@ exports.up = (pgm) => {
     date: {
       type: 'TIMESTAMP',
       notNull: true,
+      default: pgm.func('current_timestamp')
     },
     owner: {
       type: 'VARCHAR(50)',
@@ -31,6 +31,6 @@ exports.up = (pgm) => {
 }
 
 exports.down = (pgm) => {
-  pgm.dropConstraint('threads')
+  pgm.dropConstraint('threads', 'fk_threads.owner_users.id')
   pgm.dropTable('threads')
 }

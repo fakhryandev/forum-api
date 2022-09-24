@@ -23,7 +23,7 @@ class GetDetailThreadUseCase {
     for (const comment of comments) {
       const commentReplies = replies
         .filter((reply) => reply.comment_id === comment.id)
-        .map((reply) => new DetailReplies({ ...reply }))
+        .map((reply) => new DetailReplies(reply))
         .sort((a, b) => a.date - b.date)
       commentsWithReplies.push({
         ...comment,

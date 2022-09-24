@@ -23,7 +23,7 @@ class CommentRepositoryPostgres extends CommentRepository {
 
     const { rows } = await this._pool.query(query)
 
-    return new AddedComment({ ...rows[0] })
+    return new AddedComment(rows[0])
   }
 
   async verifyAvailableComment(id) {
@@ -79,7 +79,7 @@ class CommentRepositoryPostgres extends CommentRepository {
 
     const result = await this._pool.query(query)
 
-    return result.rows.map((row) => new DetailComment({ ...row }))
+    return result.rows.map((row) => new DetailComment(row))
   }
 }
 

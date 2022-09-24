@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 exports.up = (pgm) => {
   pgm.createTable('replies', {
     id: {
@@ -20,6 +19,7 @@ exports.up = (pgm) => {
     date: {
       type: 'TIMESTAMP',
       notNull: true,
+      default: pgm.func('current_timestamp')
     },
     is_delete: {
       type: 'BOOLEAN',

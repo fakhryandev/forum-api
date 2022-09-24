@@ -79,29 +79,29 @@ describe('GetDetailThreadUseCase', () => {
       'comment-123',
     ])
 
-    expect(thread.id).toEqual(useCasePayload.threadId)
-    expect(thread.title).toEqual('new thread')
-    expect(thread.body).toEqual('new thread body')
-    expect(thread.username).toEqual('testuser')
-    expect(thread.date).toEqual(currentDate)
+    expect(thread.id).toStrictEqual(useCasePayload.threadId)
+    expect(thread.title).toStrictEqual('new thread')
+    expect(thread.body).toStrictEqual('new thread body')
+    expect(thread.username).toStrictEqual('testuser')
+    expect(thread.date).toStrictEqual(currentDate)
 
     expect(thread.comments).toHaveLength(1)
-    expect(thread.comments[0].id).toEqual('comment-123')
-    expect(thread.comments[0].username).toEqual('test-user-comment')
-    expect(thread.comments[0].content).toEqual('new comment content')
-    expect(thread.comments[0].date).toEqual(currentDate)
+    expect(thread.comments[0].id).toStrictEqual('comment-123')
+    expect(thread.comments[0].username).toStrictEqual('test-user-comment')
+    expect(thread.comments[0].content).toStrictEqual('new comment content')
+    expect(thread.comments[0].date).toStrictEqual(currentDate)
 
     expect(thread.comments[0].replies).toHaveLength(2)
-    expect(thread.comments[0].replies[0].id).toEqual('reply-123')
-    expect(thread.comments[0].replies[0].username).toEqual('test-user')
-    expect(thread.comments[0].replies[0].content).toEqual('new replies')
-    expect(thread.comments[0].replies[0].date).toEqual(currentDate)
+    expect(thread.comments[0].replies[0].id).toStrictEqual('reply-123')
+    expect(thread.comments[0].replies[0].username).toStrictEqual('test-user')
+    expect(thread.comments[0].replies[0].content).toStrictEqual('new replies')
+    expect(thread.comments[0].replies[0].date).toStrictEqual(currentDate)
 
-    expect(thread.comments[0].replies[1].id).toEqual('reply-456')
-    expect(thread.comments[0].replies[1].username).toEqual('test-user2')
-    expect(thread.comments[0].replies[1].content).toEqual(
+    expect(thread.comments[0].replies[1].id).toStrictEqual('reply-456')
+    expect(thread.comments[0].replies[1].username).toStrictEqual('test-user2')
+    expect(thread.comments[0].replies[1].content).toStrictEqual(
       'another replies content'
     )
-    expect(thread.comments[0].replies[1].date).toEqual(nextHour)
+    expect(thread.comments[0].replies[1].date).toStrictEqual(nextHour)
   })
 })

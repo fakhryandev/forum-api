@@ -22,7 +22,7 @@ class RepliesRepositoryPostgres extends RepliesRepository {
 
     const { rows } = await this._pool.query(query)
 
-    return new AddedReply({ ...rows[0] })
+    return new AddedReply(rows[0])
   }
 
   async verifyRepliesOwner(id, owner) {
