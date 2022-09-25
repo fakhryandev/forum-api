@@ -1,12 +1,14 @@
 class LikeCommentUseCase {
-  constructor({ commentRepository, likeRepository }) {
+  constructor({ commentRepository, likeRepository, threadRepository }) {
+    this._threadRepository = threadRepository
     this._commentRepository = commentRepository
     this._likeRepository = likeRepository
   }
 
   async execute(useCasePayload) {
-    const { commentId, userId } = useCasePayload
+    const { threadId, commentId, userId } = useCasePayload
 
+    await this._threadRepository.verifyAvailableThreadById(threadId)
     await this._commentRepository.verifyAvailableComment(commentId)
     const likeId = await this._likeRepository.isLiked(commentId, userId)
 

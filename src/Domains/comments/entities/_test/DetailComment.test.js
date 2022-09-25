@@ -20,6 +20,7 @@ describe('DetailComment entities', () => {
       date: '2021-08-08T07:22:33.555Z',
       content: 12356,
       is_delete: 'false',
+      like: 0,
     }
 
     expect(() => new DetailComment(payload)).toThrowError(
@@ -34,6 +35,7 @@ describe('DetailComment entities', () => {
       date: new Date('2021-08-08T07:22:33.555Z'),
       content: 'content comment',
       is_delete: true,
+      like: 0,
     }
 
     const detailComment = new DetailComment(payload)
@@ -48,6 +50,7 @@ describe('DetailComment entities', () => {
       date: new Date('2021-08-08T07:22:33.555Z'),
       content: 'content comment',
       is_delete: false,
+      like: 1,
     }
 
     const detailComment = new DetailComment(payload)

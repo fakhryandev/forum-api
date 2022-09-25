@@ -37,6 +37,7 @@ describe('GetDetailThreadUseCase', () => {
             date: currentDate,
             content: 'new comment content',
             is_delete: false,
+            like: 1,
           }),
         ])
       )
