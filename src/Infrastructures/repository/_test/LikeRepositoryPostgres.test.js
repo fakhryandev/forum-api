@@ -44,8 +44,8 @@ describe('LikeRepositoryPostgres', () => {
       )
 
       expect(likes).toHaveLength(1)
-      expect(likes.like.comment_id).toStrictEqual(commentId)
-      expect(likes.like.user_id).toStrictEqual(ownerId)
+      expect(likes[0].comment_id).toStrictEqual(commentId)
+      expect(likes[0].user_id).toStrictEqual(ownerId)
     })
   })
 
