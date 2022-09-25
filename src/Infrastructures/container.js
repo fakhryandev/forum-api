@@ -23,6 +23,8 @@ const CommentRepository = require('../Domains/comments/CommentRepository')
 const CommentRepositoryPostgres = require('./repository/CommentRepositoryPostgres')
 const RepliesRepository = require('../Domains/replies/RepliesRepository')
 const RepliesRepositoryPostgres = require('./repository/RepliesRepositoryPostgres')
+const LikeRepository = require('../Domains/likes/LikeRepository')
+const LikeRepositoryPostgres = require('./repository/LikeRepositoryPostgres')
 
 //use case
 const AddUserUseCase = require('../Applications/use_case/AddUserUseCase')
@@ -35,6 +37,7 @@ const DeleteCommentUseCase = require('../Applications/use_case/DeleteCommentUseC
 const GetDetailThreadUseCase = require('../Applications/use_case/GetDetailThreadUseCase')
 const AddRepliesUseCase = require('../Applications/use_case/AddRepliesUseCase')
 const DeleteRepliesUseCase = require('../Applications/use_case/DeleteRepliesUseCase')
+const LikeCommentUseCase = require('../Applications/use_case/LikeCommentUseCase')
 
 // creating container
 const container = createContainer()
@@ -119,6 +122,20 @@ container.register([
   {
     key: RepliesRepository.name,
     Class: RepliesRepositoryPostgres,
+    parameter: {
+      dependencies: [
+        {
+          concrete: pool,
+        },
+        {
+          concrete: nanoid,
+        },
+      ],
+    },
+  },
+  {
+    key: LikeRepository.name,
+    Class: LikeRepositoryPostgres,
     parameter: {
       dependencies: [
         {
@@ -312,6 +329,27 @@ container.register([
         {
           name: 'repliesRepository',
           internal: RepliesRepository.name,
+        },
+      ],
+    },
+  },
+  {
+    key: LikeCommentUseCase.name,
+    Class: LikeCommentUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'commentRepository',
+          internal: CommentRepository.name,
+        },
+        {
+          name: 'likeRepository',
+          internal: LikeRepository.name,
+        },
+        {
+          name: 'threadRepository',
+          internal: ThreadRepository.name,
         },
       ],
     },

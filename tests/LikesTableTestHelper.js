@@ -32,3 +32,5 @@ const LikesTableTestHelper = {
     await pool.query('TRUNCATE TABLE likes CASCADE')
   },
 }
+
+module.exports = LikesTableTestHelper

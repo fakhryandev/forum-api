@@ -7,6 +7,7 @@ const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelp
 const AddedComment = require('../../../Domains/comments/entities/AddedComment')
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError')
 const AuthorizationError = require('../../../Commons/exceptions/AuthorizationError')
+const LikesTableTestHelper = require('../../../../tests/LikesTableTestHelper')
 
 describe('CommentRepositoryPostgres', () => {
   afterEach(async () => {
@@ -239,6 +240,8 @@ describe('CommentRepositoryPostgres', () => {
         date: currentDate,
       })
 
+      await LikesTableTestHelper.addLike({ commentId: 'comment-123' })
+
       await CommentsTableTestHelper.deleteCommentById('comment-789')
 
       const comments = await commentRepositoryPostgres.getCommentsByThreadId(
@@ -251,11 +254,13 @@ describe('CommentRepositoryPostgres', () => {
       expect(comment1.username).toEqual('user-test')
       expect(comment1.content).toEqual('comment 1')
       expect(comment1.date).toEqual(currentDate)
+      expect(comment1.likeCount).toEqual(1)
 
       expect(comment2.id).toEqual('comment-789')
       expect(comment2.username).toEqual('user-test')
       expect(comment2.content).toEqual('**komentar telah dihapus**')
       expect(comment2.date).toEqual(currentDate)
+      expect(comment2.likeCount).toEqual(0)
     })
   })
 })
